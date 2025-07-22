@@ -1,28 +1,42 @@
-name: CI/CD for AWS Lambda
+name: deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Zip Lambda function
-      run: |
-        zip lambda-package.zip app.py
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
 
-    - name: Deploy to AWS Lambda
+    - name: Install AWS CLI
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+
+    - name: Install AWS SAM CLI
+      run: |
+        pip install aws-sam-cli
+
+    - name: Deploy with SAM
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ap-south-1
       run: |
-        aws lambda update-function-code \
-          --function-name my-math-lambda \
-          --zip-file fileb://lambda-package.zip \
-          --region $AWS_REGION
+        sam deploy \
+          --stack-name math-api-stack \
+          --s3-bucket your-s3-bucket-name \
+          --region ap-south-1 \
+          --capabilities CAPABILITY_IAM \
+          --no-confirm-changeset \
+          --resolve-s3
