@@ -17,7 +17,7 @@ This project is a simple **Python-based AWS Lambda function** deployed via **API
 🗂️ Project Structure
 ---------------------
 ```
-my-lambda-app/
+github-actions/
 ├── app.py                     # Lambda logic
 ├── requirements.txt           # Dependencies (empty for now)
 ├── test_app.py                # Unit tests
