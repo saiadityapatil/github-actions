@@ -132,7 +132,7 @@ sam local invoke MathFunction --event event.json
 ```
 
 event.json:
-```json
+```
 {
   "body": "{"operation": "subtract", "a": 8, "b": 3}"
 }
